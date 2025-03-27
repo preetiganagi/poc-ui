@@ -110,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Sidebar Links */}
       <motion.nav
         className={cn(
-          direction === "horizontal" ? "flex-row" : "flex-col",
+          direction === "horizontal" ? "flex-row" : "flex-col items-start",
           "flex"
         )}
       >

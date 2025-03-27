@@ -6,20 +6,7 @@ import Sidebar from "./components/navbar/sideNavbar";
 import { DynamicNavbar } from "./components/navbar/dynamicNavbar";
 
 const App: React.FC = () => {
-  const [isSidebarOpenRight, setIsSidebarOpenRight] = useState(false);
-  const [isSidebarOpenLeft, setIsSidebarOpenLeft] = useState(false);
-
-  const handleSignIn = () => {
-    console.log("Sign In Clicked");
-  };
-  const navLinks = [
-    "Home",
-    "Features",
-    "Company",
-    "Pricing",
-    "Customers",
-    "Support",
-  ];
+  const navLinks = ["Home", "About", "Contact"];
   const links = [
     { label: "Home", href: "#", icon: Home },
     { label: "About", href: "#", icon: Info },
@@ -27,30 +14,68 @@ const App: React.FC = () => {
     { label: "Services", href: "#", icon: Settings },
     { label: "Contact", href: "#", icon: Mail },
   ];
+  const [activeLink, setActiveLink] = useState<string>("Home");
+  const [isSidebarOpenLeft, setIsSidebarOpenLeft] = useState(false);
+  const [direction, setDirection] = useState<"horizontal" | "vertical">(
+    "horizontal"
+  );
+  const [position, setPosition] = useState<
+    "left" | "right" | "bottomLeft" | "bottomRight"
+  >("bottomLeft");
 
-  const [activeLink, setActiveLink] = useState("Home");
   return (
     <div className="flex flex-col gap-8 items-center justify-center">
       <p className="text-2xl font-medium text-center pt-4 pb-2">Navbar</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <label>
+          Direction:
+          <select
+            className="border p-2 ml-2"
+            value={direction}
+            onChange={(e) =>
+              setDirection(e.target.value as "horizontal" | "vertical")
+            }
+          >
+            <option value="horizontal">Horizontal</option>
+            <option value="vertical">Vertical</option>
+          </select>
+        </label>
+        <label>
+          select Position for sidebar:
+          <select
+            className="border p-2 ml-2"
+            value={position}
+            onChange={(e) =>
+              setPosition(
+                e.target.value as
+                  | "left"
+                  | "right"
+                  | "bottomLeft"
+                  | "bottomRight"
+              )
+            }
+          >
+            <option value="left">Left</option>
+            <option value="right">Right</option>
+            <option value="bottomLeft">Bottom Left</option>
+            <option value="bottomRight">Bottom Right</option>
+          </select>
+        </label>
+      </div>
+
       {/* Example with default variant and size */}
-      <div className="w-[95%] bg-white justify-center items-center">
-        <h1 className="text-center text-bold"> Basic Navbar </h1>
-        <Navbar variant="gradient" size="sm">
-          <a className="hover:underline">Home</a>
-          <a className="hover:underline">About</a>
-          <a className="hover:underline">Contact</a>
-        </Navbar>
-        <h1 className="text-center text-bold"> Primary Navbar </h1>
+      <div className="w-[95%] bg-white justify-center items-center space-y-4">
+        <h1 className="text-center font-bold"> Primary Navbar </h1>
         <Navbar
           variant="primary"
-          size="md"
           className="flex justify-center space-x-8"
+          direction={direction}
         >
           {navLinks.map((link) => (
             <button
               key={link}
               onClick={() => setActiveLink(link)}
-              className={`relative px-4 py-2  text-white hover:text-blue-600 transition-all ${
+              className={`relative px-4 py-2 text-white hover:text-blue-600 transition-all ${
                 activeLink === link ? "text-blue-900" : ""
               }`}
             >
@@ -61,56 +86,23 @@ const App: React.FC = () => {
             </button>
           ))}
         </Navbar>
-        <h1 className="text-center text-bold"> Dynamic links to Navbar </h1>
+        <h1 className="text-center font-bold"> Dynamic links to Navbar </h1>
         <DynamicNavbar
-          brandName="Brand Name"
-          links={links}
-          direction="vertical"
+          direction={direction}
           variant="dark"
+          brandName="Dynamic Navbar"
+          links={links}
         ></DynamicNavbar>
 
-        <h1 className="text-center text-bold">
-          Show Sidebar: pass links and brand name to Sidebar
-        </h1>
         <div className="w-[95%] bg-white p-4 gap-4 rounded-md shadow-lg flex flex-wrap justify-center items-center">
-          <button
-            onClick={() => setIsSidebarOpenLeft(true)}
-            className="p-4 bg-blue-500 text-white rounded-md"
-          >
-            Show Sidebar left
-          </button>
-
-          {isSidebarOpenLeft && (
-            <Sidebar
-              links={links}
-              brandName="MyBrand"
-              onClose={() => setIsSidebarOpenLeft(false)}
-              position="left"
-              direction="vertical"
-            />
-          )}
-
+          <h1 className="text-center font-bold">Sidebar</h1>
           <Sidebar
             links={links}
             brandName="MyBrand"
-            position="right"
-            variant="default"
-            direction="horizontal"
-          />
-          <Sidebar
-            links={links}
-            brandName="MyBrand"
-            position="bottomLeft"
-            direction="vertical"
+            position={position}
+            direction={direction}
           />
         </div>
-
-        <h1>Vericle Navbar</h1>
-        <Navbar variant="gradient" direction="vertical">
-          <a className="hover:underline">Home</a>
-          <a className="hover:underline">About</a>
-          <a className="hover:underline">Contact</a>
-        </Navbar>
       </div>
     </div>
   );
