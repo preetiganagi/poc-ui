@@ -1,9 +1,19 @@
 // src/App.tsx
 import React, { useState } from "react";
 import { Navbar, NavbarProps } from "./components/navbar/index";
-import { Home, Info, User, Briefcase, Settings, Mail } from "lucide-react";
+import {
+  Home,
+  Info,
+  User,
+  Briefcase,
+  Settings,
+  Mail,
+  ChevronRight,
+} from "lucide-react";
 import Sidebar from "./components/navbar/sideNavbar";
 import { DynamicNavbar } from "./components/navbar/dynamicNavbar";
+import { Breadcrumbs } from "./components/breadcrumbs";
+import { Tabs } from "./components/tabs";
 
 const App: React.FC = () => {
   const navLinks = ["Home", "About", "Contact"];
@@ -22,6 +32,7 @@ const App: React.FC = () => {
   const [position, setPosition] = useState<
     "left" | "right" | "bottomLeft" | "bottomRight"
   >("bottomLeft");
+  const steps = ["Cart", "Billing", "Shipping", "Payment"];
 
   return (
     <div className="flex flex-col gap-8 items-center justify-center">
@@ -95,7 +106,9 @@ const App: React.FC = () => {
         ></DynamicNavbar>
 
         <div className="w-[95%] bg-white p-4 gap-4 rounded-md shadow-lg flex flex-wrap justify-center items-center">
-          <h1 className="text-center font-bold">Sidebar</h1>
+          <h1 className="text-center font-bold">
+            Sidebar (select dropdown for different types sidebar demo)
+          </h1>
           <Sidebar
             links={links}
             brandName="MyBrand"
@@ -103,6 +116,83 @@ const App: React.FC = () => {
             direction={direction}
           />
         </div>
+      </div>
+      <h1>Breadcrumbs</h1>
+      <div className="w-[95%] bg-white p-4 gap-4 rounded-md shadow-lg flex flex-wrap justify-center items-center">
+        <h1 className="text-center font-bold">Text Breadcrumbs:</h1>
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Products", href: "/products" },
+            { label: "Shoes" },
+          ]}
+          variant="text"
+          size="lg"
+          separatorIcon={ChevronRight}
+        />
+      </div>
+      <div className="w-[95%] bg-white p-4 gap-4 rounded-md shadow-lg flex flex-wrap justify-center items-center">
+        <h1 className="text-center font-bold">Step Breadcrumbs:</h1>
+        <Breadcrumbs
+          variant="step"
+          steps={steps}
+          currentStep={2}
+          size="lg"
+          separatorIcon={ChevronRight}
+        />
+      </div>
+      <div className="w-[95%] bg-white p-4 gap-4 rounded-md shadow-lg flex flex-wrap justify-center items-center">
+        <h1 className="text-center font-bold">Custom Breadcrumbs:</h1>
+        <Breadcrumbs
+          variant="custom"
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Products", href: "/products" },
+            { label: "Shoes" },
+          ]}
+          currentStep={1}
+          size="lg"
+          // separatorIcon={ChevronRight}
+          bgColor="green"
+          shape="default"
+        />
+      </div>
+      <h1>Tabs</h1>
+      <div className="w-[95%] bg-white p-4 gap-4 rounded-md shadow-lg flex flex-wrap justify-center items-center">
+        <h1 className="text-center font-bold">Underline tabs:</h1>
+        <Tabs
+          options={["Recent", "Pending", "Completed"]}
+          selected={1}
+          variant="underline" // Change to "filled", "pill", "block"
+          value={(index) => console.log("Selected Tab:", index)}
+        />
+      </div>
+      <div className="w-[95%] bg-white p-4 gap-4 rounded-md shadow-lg flex flex-wrap justify-center items-center">
+        <p className="text-center font-bold">filled tabs:</p>
+        <Tabs
+          options={["Recent", "Pending", "Completed"]}
+          selected={1}
+          variant="filled" // Change to "filled", "pill", "block"
+          value={(index) => console.log("Selected Tab:", index)}
+        />
+      </div>
+      <div className="w-[95%] bg-white p-4 gap-4 rounded-md shadow-lg flex flex-wrap justify-center items-center">
+        <h1 className="text-center font-bold">Pill tabs:</h1>
+        <Tabs
+          options={["Recent", "Pending", "Completed"]}
+          selected={1}
+          variant="pill" // Change to "filled", "pill", "block"
+          value={(index) => console.log("Selected Tab:", index)}
+        />
+      </div>
+      <div className="w-[95%] bg-white p-4 gap-4 rounded-md shadow-lg flex flex-wrap justify-center items-center">
+        <h1 className="text-center font-bold">block tabs:</h1>
+        <Tabs
+          options={["Recent", "Pending", "Completed"]}
+          selected={1}
+          variant="block" // Change to "filled", "pill", "block"
+          value={(index) => console.log("Selected Tab:", index)}
+        />
       </div>
     </div>
   );
