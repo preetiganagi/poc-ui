@@ -1,14 +1,32 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../utils/cn";
+import { useEffect, useState } from "react";
+import { once } from "events";
 
 export interface NavbarProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends Omit<HTMLMotionProps<"nav">, "ref">,
     VariantProps<typeof navbarVariants> {
   isOpen?: boolean;
+  animationType?:
+    | "slide"
+    | "wave"
+    | "rotate"
+    | "blur"
+    | "scroll"
+    | "glow"
+    | "stagger"
+    | "magnetic"
+    | "theme"
+    | "shake"
+    | "basic"
+    | "slideLeft"
+    | "slideRight"
+    | "slideUp";
+  direction?: "horizontal" | "vertical";
 }
 
 const navbarVariants = cva(
@@ -18,8 +36,8 @@ const navbarVariants = cva(
       variant: {
         default: "bg-white text-gray-900",
         dark: "bg-gray-900 text-white",
-        transparent: "bg-transparent text-white",
-        glass: "bg-white/10 backdrop-blur-lg text-white",
+        transparent: "bg-transparent text-transparent",
+        glass: "bg-white/10 backdrop-blur-lg text-blue-200",
         gradient: "bg-gradient-to-r from-blue-500 to-purple-500 text-white",
         primary: "bg-blue-400 text-white",
       },
@@ -51,30 +69,99 @@ const navbarVariants = cva(
       },
       direction: {
         horizontal: "flex-row",
-        vertical: "flex-col items-start w-60 space-y-4 p-4 ",
+        vertical: "flex-col items-start w-60 space-y-4 p-4",
       },
     },
     defaultVariants: {
-      // size: "md",
       weight: "semibold",
       align: "left",
-      // textColor: "default",
       direction: "horizontal",
     },
   }
 );
 
-const animations = {
-  slideDown: {
+const animationVariants: Record<string, Partial<HTMLMotionProps<"nav">>> = {
+  slide: {
     initial: { y: -50, opacity: 0 },
     animate: { y: 0, opacity: 1 },
     exit: { y: -50, opacity: 0 },
-    transition: { duration: 0.5 },
+    transition: { repeat: Infinity, duration: 6 },
+  },
+  wave: {
+    whileHover: {
+      scale: 1.1,
+      rotate: [0, 2, -2, 2, -2, 0],
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+      },
+    },
+  },
+  rotate: {
+    whileHover: { rotate: 360, transition: { duration: 1 } },
+  },
+  blur: {
+    initial: { opacity: 0, filter: "blur(10px)" },
+    animate: { opacity: 1, filter: "blur(0px)" },
+    transition: { repeat: Infinity, duration: 3 },
+  },
+  scroll: {
+    initial: { scale: 1 },
+    animate: { scale: 0.95 },
+    transition: { repeat: Infinity, duration: 2 },
+  },
+  glow: {
+    whileHover: {
+      boxShadow: "0 0 25px 8px rgba(0, 123, 255, 0.7)",
+      transition: { duration: 0.5 },
+    },
+  },
+  stagger: {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { repeat: Infinity, staggerChildren: 0.1, duration: 0.5 },
+  },
+  magnetic: {
+    whileHover: {
+      scale: 1.08,
+      transition: {
+        type: "spring",
+        stiffness: 500,
+        damping: 20,
+      },
+    },
+  },
+  theme: {
+    initial: { backgroundColor: "#fff" },
+    animate: { backgroundColor: "#000", color: "#fff" },
+    transition: { repeat: Infinity, duration: 4 },
+  },
+  shake: {
+    whileHover: {
+      x: [0, -10, 10, -10, 10, -6, 6, -4, 4, 0],
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+        repeat: Infinity,
+      },
+    },
   },
   slideLeft: {
     initial: { x: -200, opacity: 0 },
     animate: { x: 0, opacity: 1 },
     exit: { x: -200, opacity: 0 },
+    transition: { repeat: Infinity, duration: 0.5 },
+  },
+  slideRight: {
+    initial: { x: 200, opacity: 0 },
+    animate: { x: 0, opacity: 1 },
+    exit: { x: 200, opacity: 0 },
+    transition: { duration: 0.5 },
+  },
+  slideUp: {
+    initial: { y: 50, opacity: 0 },
+    animate: { y: 0, opacity: 1 },
+    exit: { y: 50, opacity: 0 },
     transition: { duration: 0.5 },
   },
 };
@@ -83,37 +170,18 @@ const Navbar: React.FC<NavbarProps> = ({
   className,
   variant,
   size,
-  direction,
+  direction = "horizontal",
   children,
   isOpen = true,
+  animationType = "slide",
   ...props
 }) => {
+  const animation = animationVariants[animationType] || {};
   return (
     <motion.nav
-      className={cn(
-        navbarVariants({ variant, size, direction, ...props }),
-        className
-      )}
-      initial={
-        direction === "vertical"
-          ? animations.slideLeft.initial
-          : animations.slideDown.initial
-      }
-      animate={
-        direction === "vertical"
-          ? animations.slideLeft.animate
-          : animations.slideDown.animate
-      }
-      exit={
-        direction === "vertical"
-          ? animations.slideLeft.exit
-          : animations.slideDown.exit
-      }
-      transition={
-        direction === "vertical"
-          ? animations.slideLeft.transition
-          : animations.slideDown.transition
-      }
+      className={cn(navbarVariants({ variant, size, direction }), className)}
+      {...animation}
+      {...props}
     >
       {children}
     </motion.nav>

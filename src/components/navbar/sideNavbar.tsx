@@ -1,16 +1,12 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useRef } from "react";
 import {
-  Home,
-  Info,
-  Briefcase,
-  Settings,
-  Mail,
-  Menu,
-  EyeClosed,
-  SidebarClose,
-  X,
-} from "lucide-react";
+  HTMLMotionProps,
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import { Home, Info, Briefcase, Settings, Mail, Menu, X } from "lucide-react";
 import { Navbar, navbarVariants } from ".";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../utils/cn";
@@ -22,7 +18,7 @@ interface LinkItem {
 }
 
 interface SidebarProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends HTMLMotionProps<"div">,
     VariantProps<typeof sidebarVariants> {
   links: LinkItem[];
   brandName?: string;
@@ -40,7 +36,7 @@ const sidebarVariants = cva("fixed h-full overflow-hidden transition-all", {
     },
     isOpen: {
       true: "w-fit h-fit",
-      false: "w-20, h-fit",
+      false: "w-20 h-fit",
     },
     variant: {
       default: "bg-gray-900 text-white",
@@ -76,24 +72,80 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [open, setOpen] = useState(isOpen);
 
   const toggleSidebar = () => setOpen((prev) => !prev);
-
   const handleClose = () => {
     onClose?.();
   };
 
+  const sidebarMotion = {
+    initial: {
+      x: position === "left" ? "-100%" : position === "right" ? "100%" : 0,
+      y: position.includes("bottom") ? "100%" : 0,
+      opacity: 0,
+      scale: 0.95,
+      boxShadow: "0 0 0 rgba(0, 0, 0, 0)",
+    },
+    animate: {
+      x: 0,
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      boxShadow: "10px 0px 30px rgba(0, 0, 0, 0.3)",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.9,
+      transition: { duration: 0.3 },
+    },
+  };
+
+  const linkMotion = {
+    hidden: { opacity: 0, x: -20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      x: 0,
+      transition: { delay: i * 0.05 },
+    }),
+  };
+
+  const brandPulse = {
+    animate: {
+      scale: [1, 1.05, 1],
+    },
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+    },
+  };
+
   return (
     <motion.div
-      initial={{ x: position === "left" ? "-100%" : "100%" }}
-      animate={{ x: isOpen ? 0 : position === "left" ? "-300%" : "0%" }}
-      transition={{ duration: 0.4 }}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={sidebarMotion}
       className={cn(
         sidebarVariants({ position, isOpen: open, variant, direction }),
-        className
+        className,
+        "shadow-xl rounded-tr-2xl rounded-br-2xl z-40"
       )}
+      {...props}
     >
       {/* Sidebar Header */}
       <div className="p-4 flex items-center justify-between gap-4">
-        {open && <h1 className="text-xl font-bold">{brandName}</h1>}
+        {open && (
+          <motion.h1
+            className="text-xl font-bold"
+            animate={brandPulse.animate}
+            transition={brandPulse.transition}
+          >
+            {brandName}
+          </motion.h1>
+        )}
         <button onClick={() => [toggleSidebar(), handleClose()]}>
           {open ? (
             <span title="Close">
@@ -115,14 +167,33 @@ const Sidebar: React.FC<SidebarProps> = ({
         )}
       >
         {links.map((link, index) => (
-          <a
+          <motion.a
             key={index}
+            custom={index}
+            initial="hidden"
+            animate="visible"
+            variants={linkMotion}
+            whileHover={{ scale: 1.05, x: 5 }}
+            className="flex items-center p-4 gap-4 hover:bg-white/10 rounded-md transition-colors"
             href={link.href}
-            className="flex items-center p-4 gap-4 "
           >
-            <link.icon size={24} />
-            {open && <span>{link.label}</span>}
-          </a>
+            <motion.div
+              initial={{ rotate: -180 }}
+              animate={{ rotate: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <link.icon size={24} />
+            </motion.div>
+            {open && (
+              <motion.span
+                initial={{ x: -10, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.1 }}
+              >
+                {link.label}
+              </motion.span>
+            )}
+          </motion.a>
         ))}
       </motion.nav>
     </motion.div>
