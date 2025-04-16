@@ -9,6 +9,7 @@ import {
   Mail,
   ChevronRight,
 } from "lucide-react";
+import { cn } from "./utils/cn";
 // const links = [
 //   { name: "Home", href: "/" },
 //   { name: "About", href: "/about" },
@@ -17,12 +18,14 @@ import {
 // ];
 
 export const SidebarDemo = () => {
+  const [activeLink, setActiveLink] = useState("Home");
+
   const [direction, setDirection] = useState<"horizontal" | "vertical">(
-    "horizontal"
+    "vertical"
   );
   const [position, setPosition] = useState<
     "left" | "right" | "bottomLeft" | "bottomRight"
-  >("bottomLeft");
+  >("left");
   const links = [
     { label: "Home", href: "#", icon: Home },
     { label: "About", href: "#", icon: Info },
@@ -75,13 +78,18 @@ export const SidebarDemo = () => {
         </label>
       </div>
 
-      <Sidebar
-        links={links}
-        brandName="MyBrand"
+      {/* <Sidebar
+        links={[
+          { label: "Home", href: "/", icon: Home },
+          { label: "Projects", href: "/projects", icon: Briefcase },
+        ]}
+        animationVariant="morph"
+        linkAnimationVariant="float"
+        variant="dark"
         position={position}
         direction={direction}
-        animate="animate"
-      />
+      /> */}
+      <Sidebar variant="light" links={links} brandName="NEW DEMO"></Sidebar>
     </div>
   );
 };

@@ -35,8 +35,8 @@ const sidebarVariants = cva("fixed h-full overflow-hidden transition-all", {
       bottomRight: "bottom-0 right-0",
     },
     isOpen: {
-      true: "w-fit h-fit",
-      false: "w-20 h-fit",
+      true: "w-fit",
+      false: "w-20",
     },
     variant: {
       default: "bg-gray-900 text-white",

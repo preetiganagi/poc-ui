@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Navbar, NavbarProps } from "./components/navbar/index";
+import { Heart, Home, Plus, Settings, User } from "lucide-react";
 
 const navLinks = ["Home", "About", "Contact"];
 
@@ -11,10 +12,24 @@ const NavbarAnimationsDemo = () => {
     "horizontal"
   );
 
+  const menuData = [
+    { title: "Home", href: "/" },
+    {
+      title: "Services",
+      submenu: [
+        { title: "Web Development", href: "/services/web" },
+        { title: "Design", href: "/services/design" },
+        { title: "SEO", href: "/services/seo" },
+      ],
+    },
+    { title: "About", href: "/about" },
+    { title: "Contact", href: "/contact" },
+  ];
+
   return (
     <div className="w-[95%] bg-white p-4 gap-4 rounded-md shadow-lg flex flex-col">
       <h1 className="text-2xl font-bold">Navbar animations</h1>
-      <div className="flex gap-4 mb-6 flex-col items-center">
+      {/* <div className="flex gap-4 mb-6 flex-col items-center">
         <label className="flex  items-start">
           Select Direction:
           <select
@@ -28,204 +43,147 @@ const NavbarAnimationsDemo = () => {
             <option value="horizontal">Horizontal</option>
           </select>
         </label>
-      </div>
-      <div>
-        <p className="font-semibold mb-2">Basic:</p>
-        <Navbar animationType="basic" direction={direction} variant="primary">
-          {navLinks.map((link) => (
-            <button
-              key={link}
-              onClick={() => setActiveLink(link)}
-              className={`relative px-4 py-2 text-white transition-all ${
-                activeLink === link ? "text-blue-900" : ""
-              }`}
-            >
-              {link}
-              {activeLink === link && (
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-blue-600"></span>
-              )}
-            </button>
-          ))}
-        </Navbar>
-      </div>
-      <div>
-        <p className="font-semibold mb-2">Glow:</p>
-        <Navbar variant="default" direction={direction} animationType="glow">
-          <div>Home</div>
-          <div>About</div>
-          <div>Contact</div>
-        </Navbar>
-      </div>
-
-      <div>
-        <p className="font-semibold mb-2">Scroll:</p>
-        <Navbar variant="gradient" direction={direction} animationType="scroll">
-          <div>Home</div>
-          <div>About</div>
-          <div>Contact</div>
-        </Navbar>
-      </div>
-
-      <div>
-        <p className="font-semibold mb-2">Theme:</p>
-        <Navbar animationType="theme" direction={direction} variant="glass">
-          {navLinks.map((link) => (
-            <button
-              key={link}
-              onClick={() => setActiveLink(link)}
-              className={`relative px-4 py-2 text-white transition-all ${
-                activeLink === link ? "text-blue-900" : ""
-              }`}
-            >
-              {link}
-              {activeLink === link && (
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-blue-600"></span>
-              )}
-            </button>
-          ))}
-        </Navbar>
-      </div>
-
-      <div>
-        <p className="font-semibold mb-2">Shake:</p>
-        <Navbar animationType="shake" direction={direction} variant="dark">
-          {navLinks.map((link) => (
-            <button
-              key={link}
-              onClick={() => setActiveLink(link)}
-              className={`relative px-4 py-2 text-white transition-all ${
-                activeLink === link ? "text-blue-900" : ""
-              }`}
-            >
-              {link}
-              {activeLink === link && (
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-blue-600"></span>
-              )}
-            </button>
-          ))}
-        </Navbar>
-      </div>
-
-      <div>
-        <p className="font-semibold mb-2">Blur:</p>
-        <Navbar animationType="blur" direction={direction} variant="primary">
-          {navLinks.map((link) => (
-            <button
-              key={link}
-              onClick={() => setActiveLink(link)}
-              className={`relative px-4 py-2 text-white transition-all ${
-                activeLink === link ? "text-blue-900" : ""
-              }`}
-            >
-              {link}
-              {activeLink === link && (
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-blue-600"></span>
-              )}
-            </button>
-          ))}
-        </Navbar>
-      </div>
-
-      <div>
-        <p className="font-semibold mb-2">Slide:</p>
-        <Navbar animationType="slide" direction={direction} variant="primary">
-          {navLinks.map((link) => (
-            <button
-              key={link}
-              onClick={() => setActiveLink(link)}
-              className={`relative px-4 py-2 text-white transition-all ${
-                activeLink === link ? "text-blue-900" : ""
-              }`}
-            >
-              {link}
-              {activeLink === link && (
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-blue-600"></span>
-              )}
-            </button>
-          ))}
-        </Navbar>
-      </div>
-
-      <div>
-        <p className="font-semibold mb-2">Stagger:</p>
-        <Navbar animationType="stagger" direction={direction} variant="primary">
-          {navLinks.map((link) => (
-            <button
-              key={link}
-              onClick={() => setActiveLink(link)}
-              className={`relative px-4 py-2 text-white transition-all ${
-                activeLink === link ? "text-blue-900" : ""
-              }`}
-            >
-              {link}
-              {activeLink === link && (
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-blue-600"></span>
-              )}
-            </button>
-          ))}
-        </Navbar>
-      </div>
-      <div>
-        <p className="font-semibold mb-2">Magnetic:</p>
+      </div> */}
+      <div className="flex gap-4 mb-6 flex-col items-center ">
+        <p className="font-semibold mb-2">Animation type: Spotlight:</p>
         <Navbar
-          animationType="magnetic"
+          animationType="spotlight"
+          variant="dark"
+          className="gap-6"
           direction={direction}
-          variant="primary"
         >
-          {navLinks.map((link) => (
-            <button
-              key={link}
-              onClick={() => setActiveLink(link)}
-              className={`relative px-4 py-2 text-white transition-all ${
-                activeLink === link ? "text-blue-900" : ""
-              }`}
-            >
-              {link}
-              {activeLink === link && (
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-blue-600"></span>
-              )}
-            </button>
-          ))}
+          <a href="#">
+            <Home />
+          </a>
+          <Heart />
+          <Plus />
+          <User />
+          <Settings />
+        </Navbar>
+        <Navbar animationType="spotlight" variant="dark" className="gap-6">
+          <div>
+            <a href="">Home</a>
+          </div>
+          <div>
+            <a href="">About</a>
+          </div>
+          <div>
+            <input type="text" placeholder=" Search Here..." />
+          </div>
+          <div>
+            <a href="">Contact</a>
+          </div>
         </Navbar>
       </div>
-      <div>
-        <p className="font-semibold mb-2">Rotate:</p>
-        <Navbar animationType="rotate" direction={direction} variant="primary">
-          {navLinks.map((link) => (
-            <button
-              key={link}
-              onClick={() => setActiveLink(link)}
-              className={`relative px-4 py-2 text-white transition-all ${
-                activeLink === link ? "text-blue-900" : ""
-              }`}
-            >
-              {link}
-              {activeLink === link && (
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-blue-600"></span>
-              )}
-            </button>
-          ))}
+      <div className="flex gap-6 mb-6 flex-col w-full">
+        <p className="font-semibold mb-2">Animation type: Basic</p>
+        <Navbar variant="primary" animationType="basic">
+          <div>
+            <a href="">Home</a>
+          </div>
+          <div>
+            <input
+              type="text"
+              className="text-grey-900"
+              placeholder=" Search Here..."
+            />
+          </div>
+          <div>
+            <a href="">About</a>
+          </div>
+          <div>
+            <a href="">Contact</a>
+          </div>
         </Navbar>
       </div>
 
-      <div>
-        <p className="font-semibold mb-2">Wave:</p>
-        <Navbar animationType="wave" direction={direction} variant="primary">
-          {navLinks.map((link) => (
-            <button
-              key={link}
-              onClick={() => setActiveLink(link)}
-              className={`relative px-4 py-2 text-white transition-all ${
-                activeLink === link ? "text-blue-900" : ""
-              }`}
-            >
-              {link}
-              {activeLink === link && (
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-blue-600"></span>
-              )}
-            </button>
-          ))}
+      <div className="flex gap-6 mb-6 flex-col ">
+        <p className="font-semibold mb-2">Animation type: Glow:</p>
+        <Navbar variant="dark" animationType="glow">
+          <div className="flex items-center justify-between w-full px-4 py-2">
+            <div className="text-lg font-semibold">NavBar Demo</div>
+            <div className="flex gap-6">
+              {navLinks.map((link, index) => (
+                <a
+                  key={index}
+                  href="#"
+                  className="hover:text-blue-500 transition-colors"
+                >
+                  {link}
+                </a>
+              ))}
+            </div>
+          </div>
         </Navbar>
+      </div>
+      <div className="flex gap-6 mb-6 flex-col">
+        <p className="font-semibold mb-2">
+          Animation type: clickSubmenu( On click show submenu :)
+        </p>
+        <Navbar
+          animationType="clickSubmenu"
+          variant="dark"
+          header="Click Submenu"
+          submenuContent={
+            <div className="grid grid-cols-3 gap-8 text-sm text-gray-700">
+              <div className="flex flex-col space-y-2">
+                <span className="font-semibold text-lg">Benefits</span>
+                <span className="font-semibold text-lg">Marketplace</span>
+                <span className="font-semibold text-lg">Partners</span>
+                <span className="font-semibold text-lg">Community</span>
+              </div>
+              <div className="flex flex-col space-y-1">
+                <span className="text-gray-400 text-sm">Company</span>
+                <span className="hover:text-black cursor-pointer">Mission</span>
+                <span className="hover:text-black cursor-pointer">Pricing</span>
+                <span className="hover:text-black cursor-pointer">
+                  Business
+                </span>
+                <span className="hover:text-black cursor-pointer">
+                  Partnership
+                </span>
+              </div>
+              <div className="flex flex-col space-y-1">
+                <span className="text-gray-400 text-sm">Follow us</span>
+                <span className="hover:text-black cursor-pointer">
+                  Instagram
+                </span>
+                <span className="hover:text-black cursor-pointer">
+                  Facebook
+                </span>
+                <span className="hover:text-black cursor-pointer">
+                  LinkedIn
+                </span>
+                <span className="hover:text-black cursor-pointer">TikTok</span>
+              </div>
+            </div>
+          }
+        />
+      </div>
+
+      <div className="flex gap-6 mb-6 flex-col ">
+        <p className="font-semibold mb-2">Animation Type: hoverSubmenu </p>
+        <Navbar
+          animationType="hoverSubmenu"
+          variant="primary"
+          header="Hover Submenu"
+          submenuContent={
+            <div className="flex items-center justify-between w-full px-4 py-2">
+              <div className="text-lg font-semibold">NavBar Demo</div>
+              <div className="flex gap-6">
+                {navLinks.map((link, index) => (
+                  <a
+                    key={index}
+                    href="#"
+                    className="hover:text-blue-500 transition-colors"
+                  >
+                    {link}
+                  </a>
+                ))}
+              </div>
+            </div>
+          }
+        />
       </div>
     </div>
   );

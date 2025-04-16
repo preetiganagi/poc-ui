@@ -1,11 +1,10 @@
 "use client";
 
-import { motion, HTMLMotionProps } from "framer-motion";
+import { motion, HTMLMotionProps, AnimatePresence } from "framer-motion";
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../utils/cn";
-import { useEffect, useState } from "react";
-import { once } from "events";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export interface NavbarProps
   extends Omit<HTMLMotionProps<"nav">, "ref">,
@@ -13,20 +12,15 @@ export interface NavbarProps
   isOpen?: boolean;
   animationType?:
     | "slide"
-    | "wave"
-    | "rotate"
-    | "blur"
-    | "scroll"
     | "glow"
-    | "stagger"
-    | "magnetic"
-    | "theme"
-    | "shake"
     | "basic"
-    | "slideLeft"
-    | "slideRight"
-    | "slideUp";
+    | "spotlight"
+    | "hoverSubmenu"
+    | "clickSubmenu";
   direction?: "horizontal" | "vertical";
+  children?: React.ReactNode;
+  submenuContent?: React.ReactNode;
+  header?: string;
 }
 
 const navbarVariants = cva(
@@ -69,7 +63,7 @@ const navbarVariants = cva(
       },
       direction: {
         horizontal: "flex-row",
-        vertical: "flex-col items-start w-60 space-y-4 p-4",
+        vertical: "flex-col items-start space-y-4 p-4",
       },
     },
     defaultVariants: {
@@ -79,6 +73,11 @@ const navbarVariants = cva(
     },
   }
 );
+const submenuVariants = {
+  hidden: { opacity: 0, y: -10 },
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -10 },
+};
 
 const animationVariants: Record<string, Partial<HTMLMotionProps<"nav">>> = {
   slide: {
@@ -87,48 +86,10 @@ const animationVariants: Record<string, Partial<HTMLMotionProps<"nav">>> = {
     exit: { y: -50, opacity: 0 },
     transition: { repeat: Infinity, duration: 6 },
   },
-  wave: {
-    whileHover: {
-      scale: 1.1,
-      rotate: [0, 2, -2, 2, -2, 0],
-      transition: {
-        duration: 0.6,
-        ease: "easeInOut",
-      },
-    },
-  },
-  rotate: {
-    whileHover: { rotate: 360, transition: { duration: 1 } },
-  },
-  blur: {
-    initial: { opacity: 0, filter: "blur(10px)" },
-    animate: { opacity: 1, filter: "blur(0px)" },
-    transition: { repeat: Infinity, duration: 3 },
-  },
-  scroll: {
-    initial: { scale: 1 },
-    animate: { scale: 0.95 },
-    transition: { repeat: Infinity, duration: 2 },
-  },
   glow: {
     whileHover: {
       boxShadow: "0 0 25px 8px rgba(0, 123, 255, 0.7)",
       transition: { duration: 0.5 },
-    },
-  },
-  stagger: {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { repeat: Infinity, staggerChildren: 0.1, duration: 0.5 },
-  },
-  magnetic: {
-    whileHover: {
-      scale: 1.08,
-      transition: {
-        type: "spring",
-        stiffness: 500,
-        damping: 20,
-      },
     },
   },
   theme: {
@@ -146,23 +107,15 @@ const animationVariants: Record<string, Partial<HTMLMotionProps<"nav">>> = {
       },
     },
   },
-  slideLeft: {
-    initial: { x: -200, opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    exit: { x: -200, opacity: 0 },
-    transition: { repeat: Infinity, duration: 0.5 },
+  spotlight: {
+    initial: { opacity: 1 },
+    animate: { opacity: 1 },
+    transition: { duration: 0.3 },
   },
-  slideRight: {
-    initial: { x: 200, opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    exit: { x: 200, opacity: 0 },
-    transition: { duration: 0.5 },
-  },
-  slideUp: {
-    initial: { y: 50, opacity: 0 },
-    animate: { y: 0, opacity: 1 },
-    exit: { y: 50, opacity: 0 },
-    transition: { duration: 0.5 },
+  Basic: {
+    initial: { opacity: 1 },
+    animate: { opacity: 1 },
+    transition: { duration: 0.3 },
   },
 };
 
@@ -177,13 +130,119 @@ const Navbar: React.FC<NavbarProps> = ({
   ...props
 }) => {
   const animation = animationVariants[animationType] || {};
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [hovered, setHovered] = React.useState(false);
+  direction =
+    animationType === "hoverSubmenu" || animationType === "clickSubmenu"
+      ? "vertical"
+      : direction;
+  const [clicked, setClicked] = React.useState(false);
+  const handleToggle = () => {
+    if (animationType === "clickSubmenu") {
+      setClicked((prev) => !prev);
+    }
+  };
+
+  const showSubmenu =
+    (animationType === "hoverSubmenu" && hovered) ||
+    (animationType === "clickSubmenu" && clicked);
+
   return (
     <motion.nav
-      className={cn(navbarVariants({ variant, size, direction }), className)}
+      className={cn(
+        navbarVariants({ variant, size, direction }),
+        "[&_input]:text-black [&_input]:border [&_input]:border-gray-300 [&_input]:rounded [&_input]:px-2 [&_input]:py-1",
+        className
+      )}
       {...animation}
       {...props}
+      onMouseEnter={() => [
+        setIsHovered(true),
+        animationType === "hoverSubmenu" && setHovered(true),
+      ]}
+      onMouseLeave={() => [
+        setIsHovered(false),
+        animationType === "hoverSubmenu" && setHovered(false),
+      ]}
+      onClick={handleToggle}
     >
-      {children}
+      {animationType === "spotlight" &&
+        React.Children.map(children, (child) => {
+          if (React.isValidElement(child)) {
+            return (
+              <motion.div
+                whileHover={{
+                  scale: 1.1,
+                  background:
+                    "radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0) 80%)",
+                  transition: { duration: 0.3 },
+                }}
+                className="rounded-full p-3"
+              >
+                {child}
+              </motion.div>
+            );
+          }
+          return null;
+        })}
+      {animationType === "basic" &&
+        React.Children.map(children, (child) => {
+          if (React.isValidElement(child)) {
+            return (
+              <motion.div
+                whileHover={{
+                  scale: 1.1,
+                  transition: { duration: 0.3 },
+                }}
+                className="flex items-center space-x-2 p-3"
+              >
+                {child}
+              </motion.div>
+            );
+          }
+          return null;
+        })}
+      {animationType === "hoverSubmenu" || animationType === "clickSubmenu" ? (
+        <>
+          <div className="flex justify-between w-full space-x-2">
+            <span className="text-lg font-bold float-left">{props.header}</span>
+            {showSubmenu ? (
+              <span className="float-right">
+                <ChevronUp size={20} />{" "}
+              </span>
+            ) : (
+              <span className="float-right">
+                {" "}
+                <ChevronDown size={20} />
+              </span>
+            )}
+          </div>
+        </>
+      ) : animationType !== "spotlight" && animationType !== "basic" ? (
+        children
+      ) : null}
+      {(animationType === "hoverSubmenu" ||
+        animationType === "clickSubmenu") && (
+        <AnimatePresence>
+          {showSubmenu && (
+            <motion.div
+              key="hoverMenu"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={submenuVariants}
+              transition={{ duration: 0.3 }}
+              className={cn(
+                "top-full left-0 right-0 bg-white  w-full px-6 py-4 border-t z-50",
+                variant === "dark" ? "bg-gray-900 text-white" : "",
+                variant === "primary" ? "bg-blue-400 text-white" : ""
+              )}
+            >
+              {props.submenuContent}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </motion.nav>
   );
 };
