@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Navbar, NavbarProps } from "./components/navbar/index";
-import { Heart, Home, Plus, Settings, User } from "lucide-react";
+import { Heart, Home, Plus, Search, Settings, User } from "lucide-react";
 
 const navLinks = ["Home", "About", "Contact"];
 
@@ -81,11 +81,20 @@ const NavbarAnimationsDemo = () => {
           <div>
             <a href="">Home</a>
           </div>
-          <div>
+
+          {/* <div className="relative w-full max-w-xs">
             <input
               type="text"
-              className="text-grey-900"
-              placeholder=" Search Here..."
+              placeholder="Search"
+              className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div> */}
+          <div className="relative w-full max-w-xs">
+            {/* <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" /> */}
+            <input
+              type="text"
+              placeholder="Search"
+              className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
           <div>
