@@ -10,7 +10,7 @@ import NavbarDropdownDemo from "./NavbarDropdownDemo";
 
 const App = () => {
   return (
-    <div className="flex flex-col justify-between w-full h-screen bg-gray-100">
+    <div className="flex flex-col justify-between w-full h-screen bg-gray-100 ">
       <div>
         <Navbar animationType="spotlight" variant="primary" className="w-full">
           <Link to="/" className="flex p-4 mb-4 float-left">
