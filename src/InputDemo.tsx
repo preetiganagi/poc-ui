@@ -1,5 +1,6 @@
 import type React from "react";
 import AnimatedInput from "./components/Input";
+import { useState } from "react";
 
 // Add this CSS to your styles
 const styles = `
@@ -32,7 +33,11 @@ const InputShowcase: React.FC = () => {
     "particleField",
     // Add more variants here...
   ];
+  const [inputValue, setInputValue] = useState("");
 
+  const handleSubmit = () => {
+    console.log("Input value:", inputValue); // ✅ use this value on event
+  };
   return (
     <>
       <style>{styles}</style>
@@ -54,10 +59,16 @@ const InputShowcase: React.FC = () => {
                 variant={variant}
                 inputClassName="text-gray-700 border-gray-200 focus:border-blue-500"
                 labelClassName="text-gray-500"
+                value={inputValue}
+                onChange={setInputValue}
+                onBlur={() => {
+                  console.log("Input lost focus");
+                }}
               />
             </div>
           ))}
         </div>
+        <button onClick={handleSubmit}>Submit</button>
       </div>
     </>
   );

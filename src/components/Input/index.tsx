@@ -9,6 +9,10 @@ interface AnimatedInputProps {
   variant: string;
   inputClassName?: string;
   labelClassName?: string;
+  value: string;
+  onChange?: (value: string) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 interface InputVariant {
@@ -43,14 +47,18 @@ export const AnimatedInput: React.FC<AnimatedInputProps> = ({
   variant,
   inputClassName = "",
   labelClassName = "",
+  value,
+  onChange,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [value, setValue] = useState("");
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setValue(e.target.value);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onChange) {
+      onChange(e.target.value);
+    }
+  };
 
   const variants = inputVariants[variant as keyof typeof inputVariants];
 

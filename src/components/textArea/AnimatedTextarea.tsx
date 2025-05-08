@@ -9,6 +9,8 @@ interface AnimatedTextareaProps {
   variant: string;
   textareaClassName?: string;
   labelClassName?: string;
+  value: string;
+  onChange: (value: string) => void;
 }
 
 interface TextareaVariant {
@@ -22,16 +24,19 @@ const AnimatedTextarea: React.FC<AnimatedTextareaProps> = ({
   variant,
   textareaClassName = "",
   labelClassName = "",
+  onChange,
+  value,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [value, setValue] = useState("");
   const [height, setHeight] = useState("auto");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setValue(e.target.value);
+    if (onChange) {
+      onChange(e.target.value);
+    }
     if (variant === "expandable" || variant === "smoothExpand") {
       setHeight("auto");
       setHeight(`${e.target.scrollHeight}px`);

@@ -1,5 +1,6 @@
 import type React from "react";
 import AnimatedTextarea from "./components/textArea/AnimatedTextarea";
+import { useState } from "react";
 
 const TextareaShowcase: React.FC = () => {
   const variants = [
@@ -24,7 +25,11 @@ const TextareaShowcase: React.FC = () => {
     "cosmic",
     "hologram",
   ];
+  const [inputValue, setInputValue] = useState("");
 
+  const handleSubmit = () => {
+    console.log("Input value:", inputValue); // ✅ use this value on event
+  };
   return (
     <div className="max-w-6xl mx-auto mt-10 p-8 bg-white rounded-xl shadow-lg">
       <h1 className="text-3xl font-bold text-center mb-12 text-gray-800">
@@ -44,6 +49,10 @@ const TextareaShowcase: React.FC = () => {
               variant={variant}
               textareaClassName="text-gray-700 border-gray-200 focus:border-blue-500"
               labelClassName="text-gray-500"
+              value={inputValue}
+              onChange={(value) => {
+                setInputValue(value);
+              }}
             />
           </div>
         ))}

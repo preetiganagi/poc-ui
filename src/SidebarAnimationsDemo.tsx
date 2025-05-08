@@ -21,6 +21,12 @@ export default function Layout() {
         position="left"
         links={links}
       />
+      <Sidebar
+        brandName="My Brand"
+        variant="default"
+        position="right"
+        links={links}
+      />
     </div>
   );
 }
